@@ -1,2 +1,2 @@
-pyyaml==3.13
 boto3
+pyyaml>=4.2b1
