@@ -31,7 +31,16 @@ def create_or_update(self, **kwargs):
         logger.info('Creating: {}'.format(stack_name))
         self.create_stack(**kwargs)
         waiter = self.get_waiter('stack_create_complete')
-        waiter.wait(StackName=stack_name)
+        try:
+            waiter.wait(StackName=stack_name)
+        except Exception as e:
+            response = self.describe_stack_events(StackName=stack_name)
+            for stack_event in response.get('StackEvents'):
+                logger.error('{}: {}'.format(
+                    stack_event.get('ResourceStatus'),
+                    stack_event.get('ResourceStatusReason'),
+                ))
+            raise e
     else:
         logger.info('Updating: {}'.format(stack_name))
         change_set_name = get_hash_for_template(kwargs.get('TemplateBody'))
@@ -65,9 +74,16 @@ def create_or_update(self, **kwargs):
             )
             logger.info('Waiting for change set to execute: {}'.format(stack_name))
             waiter = self.get_waiter('stack_update_complete')
-            waiter.wait(
-                StackName=stack_name
-            )
+            try:
+                waiter.wait(StackName=stack_name)
+            except Exception as e:
+                response = self.describe_stack_events(StackName=stack_name)
+                for stack_event in response.get('StackEvents'):
+                    logger.error('{}: {}'.format(
+                        stack_event.get('ResourceStatus'),
+                        stack_event.get('ResourceStatusReason'),
+                    ))
+                raise e
             logger.info('Finished stack: {}'.format(stack_name))
         else:
             logger.info('No changes to build for stack: {}'.format(stack_name))
