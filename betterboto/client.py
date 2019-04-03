@@ -53,6 +53,7 @@ class MultiRegionClientContextManager(object):
     def __exit__(self, *args, **kwargs):
         self.clients = None
 
+
 class CrossAccountClientContextManager(object):
     def __init__(self, service_name, role_arn, role_session_name, **kwargs):
         super().__init__()
@@ -75,7 +76,7 @@ class CrossAccountClientContextManager(object):
             "aws_session_token": credentials['SessionToken'],
         }
         if self.kwargs is not None:
-            kwargs.update(kwargs)
+            kwargs.update(self.kwargs)
         self.client = boto3.client(**kwargs)
         self.client = make_better(self.service_name, self.client)
         return self.client
