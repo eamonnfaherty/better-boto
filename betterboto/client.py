@@ -1,6 +1,7 @@
 import boto3
 from . import cloudformation
 from . import servicecatalog
+from . import organizations
 
 
 def make_better(service_name, client):
@@ -8,6 +9,8 @@ def make_better(service_name, client):
         return cloudformation.make_better(client)
     elif service_name == 'servicecatalog':
         return servicecatalog.make_better(client)
+    elif service_name == 'organizations':
+        return organizations.make_better(client)
     return client
 
 
