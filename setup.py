@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="better-boto",
-    version="0.5.2",
+    version="0.5.3",
     author="Eamonn Faherty",
     author_email="python-packages@designandsolve.co.uk",
     description="Helpers to make using boto3 more enjoyable",
@@ -19,6 +19,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        "pyyaml",
+        "pyyaml>=4.2b1",
     ],
 )
