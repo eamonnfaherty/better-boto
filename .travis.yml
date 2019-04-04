@@ -3,11 +3,11 @@ git:
 
 branches:
   only:
-  - master
+    - master
 
 language: python
 python:
-- '3.6'
+  - '3.6'
 
 
 script:
@@ -17,14 +17,17 @@ before_deploy:
   - python setup.py sdist
 
 deploy:
-  provider: pypi
-  user: eamonnfaherty
-  password:
-    secure: PYPI_PASSWORD
-  skip_existing: true
-  on:
-    branch: master
-    tags: true
+  - provider: pypi
+    user: eamonnfaherty
+    password:
+      secure: PYPI_PASSWORD
+    skip_cleanup: true
+    distributions: "sdist bdist_wheel"
+    on:
+      tags: true
+      repo: eamonnfaherty/better-boto
+      all_branches: true
+
 
 env:
   global:
