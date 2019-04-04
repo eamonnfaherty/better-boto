@@ -9,7 +9,7 @@ before_deploy:
 - python setup.py sdist
 - pip install sphinx
 - pip install recommonmark
-- cd docs && make html
+- cd docs && make html && cd -
 deploy:
   - provider: pypi
     password:

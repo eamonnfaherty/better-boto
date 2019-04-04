@@ -6,7 +6,7 @@ with open(os.path.abspath(__file__), "r") as fh:
 
 setuptools.setup(
     name="better-boto",
-    version="0.6.0",
+    version="0.6.1",
     author="Eamonn Faherty",
     author_email="python-packages@designandsolve.co.uk",
     description="Helpers to make using boto3 more enjoyable",
