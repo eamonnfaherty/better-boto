@@ -1,5 +1,3 @@
-sudo: 'required'
-
 git:
   depth: 1
 
@@ -9,16 +7,21 @@ branches:
 
 language: python
 python:
-  - "3.6"
+- '3.6'
 
-services:
-  - 'docker'
+before_deploy:
+  - python setup.py sdist
 
-script:
-  - 'make build'
+deploy:
+  provider: pypi
+  user: eamonnfaherty
+  password:
+    secure: PYPI_PASSWORD
+  skip_existing: true
+  on:
+    branch: master
+    tags: true
 
-after_success:
-  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then
-      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD ;
-      make publish ;
-    fi
+env:
+  global:
+    secure: pPzP6QWOMKDCiLNvUGV3HV5h34evlq20EoEEl13t7KUAnI8aR/CAs7KPOSDhH6Sfp4izw1sTi7yS4B3uNtngc2Gg7+z680gXq8J7t34tZdsAMrZcICkYe4hMvcEID6tqf7v4s8rYRoxfGPV7/FVvxmhy9sdEoBTR2GBg6KiU90voPlWhKTqAZCvASnEIsLqWBOcKIT/+vTcIaW08d8/B8/wwG+Dl7pXLpMS1660GLkTlaAygNvSVI75b6cEyxCadePvxhwU2r/OK7UjoFpNYsZ43aVaCO57XYMlXVS7tmwsprdLao4RmW8KhJXvyP+OSWpnZ5U6w1UumaQ5sa/zOKSWHbOLGOSNfOg/G+O3VGPmbMQX46uKyctlFu7D9Du9dRKvz/YpuSXbic4ieGOmOVWnMAgXcmVe4IpVjgZtzAo+y8tDLL1d87IlpMcjwjbCznzoEJDRMMEpytnz2UmQfoH6O3WfEtXW28XUjqyGM7LX/fUM6GFR4S8SuGRMMjEIQTWlKGjm0TVzFkGS153E4HhH9MgS5gXUxSm3E2RM9E/eC2acFo0qlMTOMKBxeRa/RZJk2aBmqrN5rhsquDyFlOEd1h1C3d5k5m+w3aMeA9xD5ppnTS/0njvvWLqICUoAS4YAM/dfi4T4uIC62y/GxYGCe/YMI7KrpzRvjbFrv4+4=
