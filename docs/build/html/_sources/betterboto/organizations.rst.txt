@@ -1,5 +1,0 @@
-organizations
-=============
-
-.. automodule:: betterboto.organizations
-    :members:

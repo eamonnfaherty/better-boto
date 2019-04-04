@@ -1,5 +1,0 @@
-betterboto client
-==================
-
-.. automodule:: betterboto.client
-    :members:

@@ -1,5 +1,0 @@
-cloudformation
-==============
-
-.. automodule:: betterboto.cloudformation
-    :members:

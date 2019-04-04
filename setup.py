@@ -1,12 +1,12 @@
 import setuptools
 import os
 
-with open(os.path.abspath(__file__), "r") as fh:
+with open(os.path.abspath(__file__).replace('setup.py', 'README.md'), "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="better-boto",
-    version="0.6.5",
+    version="0.6.6",
     author="Eamonn Faherty",
     author_email="python-packages@designandsolve.co.uk",
     description="Helpers to make using boto3 more enjoyable",
