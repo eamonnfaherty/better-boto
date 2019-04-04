@@ -1,30 +1,23 @@
 git:
   depth: 1
-
 language: python
 python:
-  - '3.6'
-
-
+- '3.6'
 script:
-  - echo "hello world"
-
+- echo "hello world"
 before_deploy:
-  - python setup.py sdist
-
+- python setup.py sdist
 deploy:
+  matrix:
   - provider: pypi
     user: eamonnfaherty
     password:
       secure: PYPI_PASSWORD
     skip_cleanup: true
-    distributions: "sdist bdist_wheel"
+    distributions: sdist bdist_wheel
     on:
       tags: true
       repo: eamonnfaherty/better-boto
       branches: all
-
-
-env:
-  global:
-    secure: pPzP6QWOMKDCiLNvUGV3HV5h34evlq20EoEEl13t7KUAnI8aR/CAs7KPOSDhH6Sfp4izw1sTi7yS4B3uNtngc2Gg7+z680gXq8J7t34tZdsAMrZcICkYe4hMvcEID6tqf7v4s8rYRoxfGPV7/FVvxmhy9sdEoBTR2GBg6KiU90voPlWhKTqAZCvASnEIsLqWBOcKIT/+vTcIaW08d8/B8/wwG+Dl7pXLpMS1660GLkTlaAygNvSVI75b6cEyxCadePvxhwU2r/OK7UjoFpNYsZ43aVaCO57XYMlXVS7tmwsprdLao4RmW8KhJXvyP+OSWpnZ5U6w1UumaQ5sa/zOKSWHbOLGOSNfOg/G+O3VGPmbMQX46uKyctlFu7D9Du9dRKvz/YpuSXbic4ieGOmOVWnMAgXcmVe4IpVjgZtzAo+y8tDLL1d87IlpMcjwjbCznzoEJDRMMEpytnz2UmQfoH6O3WfEtXW28XUjqyGM7LX/fUM6GFR4S8SuGRMMjEIQTWlKGjm0TVzFkGS153E4HhH9MgS5gXUxSm3E2RM9E/eC2acFo0qlMTOMKBxeRa/RZJk2aBmqrN5rhsquDyFlOEd1h1C3d5k5m+w3aMeA9xD5ppnTS/0njvvWLqICUoAS4YAM/dfi4T4uIC62y/GxYGCe/YMI7KrpzRvjbFrv4+4=
+  password:
+    secure: O7NT9a+Id/NZvX4D7MqI+a4awyf69JNktq4sSA7HqUPzL1+9Es8o7Fui4dMxbdxiPknIhAd3ZEN19WNrljQMVMGPp/Npv/7lhAQH7Qs1YBz1heZnZnb3sYB7Vf5cbeI0cf9rzyDhx1gsKAy4VRFryhNFx972kdm4OzGdYNdKRneX2IqvuJAouBNoggZEUslxxpYuQ/vnehKuLqZWu8gsSnONi1a68K3uJcBoWsGa681iNc47QhdtZbhRs6D8JTHH2o6ILUFjJbzrjODlWaL3yZW4dNczRfuqQHnR5yJUrF8zhYOl6HhFQ52l1kdpCQCDM+T/vUq47pa4cJtn9VXpv7iC49+PsvfcJXff2nsoxsHpX+CEVKbArSah3WJxhVBhnjIQgXwSJJW47iW3+YYEgxO9svE4V38SyvlqR8hQsV1N30+W6wtPV+1C5Q20A0xMLpOwJSp+hge7wLTEL0l29hQnkSPvMoxsCsC9N0cbrvVOxb2ayMuGPVuXe9FUkSHqJa8L//wxLLT/BH2wr6FxUS27ezewolctmVfvcvdTuhc2E77nijGdGVBYOzWkQJ2DEodLY2ttYufht/b/e6XRy2VGOJooEajmLbR0IXhhemkmEHmiu8BnODGEuAwhrWxn6IRKB92j3blk7bKsoCQhIGvYYJ0NIa0pkYO4PdIy9eY=
