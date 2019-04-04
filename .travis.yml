@@ -26,7 +26,7 @@ deploy:
     on:
       tags: true
       repo: eamonnfaherty/better-boto
-      all_branches: true
+      branches: all
 
 
 env:
