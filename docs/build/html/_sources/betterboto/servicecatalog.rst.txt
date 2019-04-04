@@ -1,0 +1,5 @@
+servicecatalog
+==============
+
+.. automodule:: betterboto.servicecatalog
+    :members:

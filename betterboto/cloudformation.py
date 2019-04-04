@@ -14,6 +14,15 @@ def get_hash_for_template(template):
 
 
 def create_or_update(self, **kwargs):
+    """
+    For the given template and stack name, this method will create a stack if it doesnt already exist otherwise it will
+    generate a changeset and then execute it.  This method will wait for the operation to complete before returning and
+    in the instance of an error it will print out the stack events to help you debug more easily.
+
+    :param self: cloudformation client
+    :param kwargs: these are passed onto the create_stack and create_change_set method calls
+    :return: None
+    """
     stack_name = kwargs.get('StackName')
     logger.info('Creating or updating: {}'.format(stack_name))
 

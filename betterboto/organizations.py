@@ -8,6 +8,14 @@ logger = logging.getLogger(__file__)
 
 
 def list_children_single_page(self, **kwargs):
+    """
+    This will continue to call list_children until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_children does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_children method call
+    :return: organizations_client.list_children.response
+    """
     return slurp(
         'list_children',
         self.list_children,
@@ -17,6 +25,14 @@ def list_children_single_page(self, **kwargs):
 
 
 def list_children_nested(self, **kwargs):
+    """
+    This method will return a list of all children (either ACCOUNT or ORGANIZATIONAL_UNIT) for the given ParentId.  It
+    includes children, grandchildren lower levels of nesting.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_children method call
+    :return: list of children in the structure of [{'Id': "0123456789010"}, {'Id': "1009876543210"}]
+    """
     child_type = kwargs.get('ChildType')
     parent_id = kwargs.get('ParentId')
 
@@ -46,11 +62,17 @@ def list_children_nested(self, **kwargs):
 
 
 def convert_path_to_ou(self, ou):
+    """
+    This method accepts an ou and returns the path from the root account down to the ou
+
+    :param self: organizations client
+    :param ou: the account
+    :return: the path from the root account down to the ou
+    """
     response = self.list_roots()
     for r in response.get('Roots', []):
         r_id = r.get('Id')
         self.list_children(ParentId=r_id, ChildType='ORGANIZATIONAL_UNIT')
-
 
 
 def make_better(client):

@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>betterboto.servicecatalog &#8212; better-boto 0.5.20 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for betterboto.servicecatalog</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">slurp</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="search_products_as_admin_single_page"><a class="viewcode-back" href="../../betterboto/services/servicecatalog.html#betterboto.servicecatalog.search_products_as_admin_single_page">[docs]</a><span class="k">def</span> <span class="nf">search_products_as_admin_single_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This will continue to call search_products_as_admin until there are no more pages left to retrieve.  It will return</span>
+<span class="sd">    the aggregated response in the same structure as search_products_as_admin does.</span>
+
+<span class="sd">    :param self: servicecatalog client</span>
+<span class="sd">    :param kwargs: these are passed onto the search_products_as_admin method call</span>
+<span class="sd">    :return: servicecatalog_client.search_products_as_admin.response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">slurp</span><span class="p">(</span>
+        <span class="s1">&#39;search_products_as_admin&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search_products_as_admin</span><span class="p">,</span>
+        <span class="s1">&#39;ProductViewDetails&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="list_portfolios_single_page"><a class="viewcode-back" href="../../betterboto/services/servicecatalog.html#betterboto.servicecatalog.list_portfolios_single_page">[docs]</a><span class="k">def</span> <span class="nf">list_portfolios_single_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This will continue to call list_portfolios until there are no more pages left to retrieve.  It will return</span>
+<span class="sd">    the aggregated response in the same structure as list_portfolios does.</span>
+
+<span class="sd">    :param self: servicecatalog client</span>
+<span class="sd">    :param kwargs: these are passed onto the list_portfolios method call</span>
+<span class="sd">    :return: servicecatalog_client.list_portfolios.response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">slurp</span><span class="p">(</span>
+        <span class="s1">&#39;list_portfolios&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_portfolios</span><span class="p">,</span>
+        <span class="s1">&#39;PortfolioDetails&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="list_provisioning_artifacts_single_page"><a class="viewcode-back" href="../../betterboto/services/servicecatalog.html#betterboto.servicecatalog.list_provisioning_artifacts_single_page">[docs]</a><span class="k">def</span> <span class="nf">list_provisioning_artifacts_single_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This will continue to call list_provisioning_artifacts until there are no more pages left to retrieve.  It will return</span>
+<span class="sd">    the aggregated response in the same structure as list_provisioning_artifacts does.</span>
+
+<span class="sd">    :param self: servicecatalog client</span>
+<span class="sd">    :param kwargs: these are passed onto the list_provisioning_artifacts method call</span>
+<span class="sd">    :return: servicecatalog_client.list_provisioning_artifacts.response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">slurp</span><span class="p">(</span>
+        <span class="s1">&#39;list_provisioning_artifacts&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_provisioning_artifacts</span><span class="p">,</span>
+        <span class="s1">&#39;ProvisioningArtifactDetails&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">make_better</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">search_products_as_admin_single_page</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">search_products_as_admin_single_page</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">list_portfolios_single_page</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">list_portfolios_single_page</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">list_provisioning_artifacts_single_page</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">list_provisioning_artifacts_single_page</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">client</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">better-boto</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/cloudformation.html">CloudFormation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/organizations.html">Organizations helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/servicecatalog.html">Service Catalog helpers</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, eamonn faherty.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

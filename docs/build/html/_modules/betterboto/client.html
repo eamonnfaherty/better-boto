@@ -1,0 +1,220 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>betterboto.client &#8212; better-boto 0.5.20 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for betterboto.client</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">cloudformation</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">servicecatalog</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">organizations</span>
+
+
+<span class="k">def</span> <span class="nf">make_better</span><span class="p">(</span><span class="n">service_name</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">service_name</span> <span class="o">==</span> <span class="s1">&#39;cloudformation&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cloudformation</span><span class="o">.</span><span class="n">make_better</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">service_name</span> <span class="o">==</span> <span class="s1">&#39;servicecatalog&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">servicecatalog</span><span class="o">.</span><span class="n">make_better</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">service_name</span> <span class="o">==</span> <span class="s1">&#39;organizations&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">organizations</span><span class="o">.</span><span class="n">make_better</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">client</span>
+
+
+<div class="viewcode-block" id="ClientContextManager"><a class="viewcode-back" href="../../betterboto/client.html#betterboto.client.ClientContextManager">[docs]</a><span class="k">class</span> <span class="nc">ClientContextManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ClientContextManager allows you to use boto3 client as a python context manager.</span>
+<span class="sd">    This allows you to perform the following::</span>
+
+<span class="sd">        with ClientContextManager(&#39;cloudformation&#39;) as cloudformation_client:</span>
+<span class="sd">            cloudformation_client.create_stack(**args)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span> <span class="o">=</span> <span class="n">service_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">make_better</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="MultiRegionClientContextManager"><a class="viewcode-back" href="../../betterboto/client.html#betterboto.client.MultiRegionClientContextManager">[docs]</a><span class="k">class</span> <span class="nc">MultiRegionClientContextManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MultiRegionClientContextManager allows you to use boto3 client as a python context manager for multiple regions.</span>
+<span class="sd">    This allows you to perform the following::</span>
+
+<span class="sd">        with MultiRegionClientContextManager(&#39;cloudformation&#39;, [&#39;us-east-1&#39;,&#39;eu-west-1&#39;]) as cloudformation_clients:</span>
+<span class="sd">            for region_name, cloudformation_client in cloudformation_clients.items():</span>
+<span class="sd">                cloudformation_client.create_stack(**args)</span>
+
+<span class="sd">    If you want to deploy to multiple regions at the same time then you should use Python Threads</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_name</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span> <span class="o">=</span> <span class="n">service_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="n">regions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">make_better</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span><span class="p">,</span>
+                <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span><span class="p">,</span>
+                    <span class="n">region_name</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">[</span><span class="n">region</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="CrossAccountClientContextManager"><a class="viewcode-back" href="../../betterboto/client.html#betterboto.client.CrossAccountClientContextManager">[docs]</a><span class="k">class</span> <span class="nc">CrossAccountClientContextManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CrossAccountClientContextManager allows you to use boto3 client as a python context manager for another account.</span>
+<span class="sd">    This allows you to perform the following::</span>
+
+<span class="sd">        with CrossAccountClientContextManager(</span>
+<span class="sd">            &#39;cloudformation&#39;,</span>
+<span class="sd">            &#39;arn:aws:iam::0123456789010:role/deployer&#39;,</span>
+<span class="sd">            &#39;deployment_account_session&#39;,</span>
+<span class="sd">        ) as deployment_account_cloudformation:</span>
+<span class="sd">            deployment_account_cloudformation.create_stack(**args)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_name</span><span class="p">,</span> <span class="n">role_arn</span><span class="p">,</span> <span class="n">role_session_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span> <span class="o">=</span> <span class="n">service_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">role_arn</span> <span class="o">=</span> <span class="n">role_arn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">role_session_name</span> <span class="o">=</span> <span class="n">role_session_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">sts</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;sts&#39;</span><span class="p">)</span>
+        <span class="n">assumed_role_object</span> <span class="o">=</span> <span class="n">sts</span><span class="o">.</span><span class="n">assume_role</span><span class="p">(</span>
+            <span class="n">RoleArn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">role_arn</span><span class="p">,</span>
+            <span class="n">RoleSessionName</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">role_session_name</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">assumed_role_object</span><span class="p">[</span><span class="s1">&#39;Credentials&#39;</span><span class="p">]</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;service_name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_name</span><span class="p">,</span>
+            <span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">:</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;AccessKeyId&#39;</span><span class="p">],</span>
+            <span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">:</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;SecretAccessKey&#39;</span><span class="p">],</span>
+            <span class="s2">&quot;aws_session_token&quot;</span><span class="p">:</span> <span class="n">credentials</span><span class="p">[</span><span class="s1">&#39;SessionToken&#39;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">make_better</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">service_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">better-boto</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/cloudformation.html">CloudFormation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/organizations.html">Organizations helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/servicecatalog.html">Service Catalog helpers</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, eamonn faherty.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

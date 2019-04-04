@@ -1,0 +1,8 @@
+better-boto
+===========
+
+.. toctree::
+   :maxdepth: 4
+
+   betterboto
+   setup

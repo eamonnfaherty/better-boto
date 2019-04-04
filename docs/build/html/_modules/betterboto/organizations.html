@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>betterboto.organizations &#8212; better-boto 0.5.20 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for betterboto.organizations</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">slurp</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="list_children_single_page"><a class="viewcode-back" href="../../betterboto/services/organizations.html#betterboto.organizations.list_children_single_page">[docs]</a><span class="k">def</span> <span class="nf">list_children_single_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This will continue to call list_children until there are no more pages left to retrieve.  It will return</span>
+<span class="sd">    the aggregated response in the same structure as list_children does.</span>
+
+<span class="sd">    :param self: organizations client</span>
+<span class="sd">    :param kwargs: these are passed onto the list_children method call</span>
+<span class="sd">    :return: organizations_client.list_children.response</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">slurp</span><span class="p">(</span>
+        <span class="s1">&#39;list_children&#39;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_children</span><span class="p">,</span>
+        <span class="s1">&#39;Children&#39;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="list_children_nested"><a class="viewcode-back" href="../../betterboto/services/organizations.html#betterboto.organizations.list_children_nested">[docs]</a><span class="k">def</span> <span class="nf">list_children_nested</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method will return a list of all children (either ACCOUNT or ORGANIZATIONAL_UNIT) for the given ParentId.  It</span>
+<span class="sd">    includes children, grandchildren lower levels of nesting.</span>
+
+<span class="sd">    :param self: organizations client</span>
+<span class="sd">    :param kwargs: these are passed onto the list_children method call</span>
+<span class="sd">    :return: list of children in the structure of [{&#39;Id&#39;: &quot;0123456789010&quot;}, {&#39;Id&#39;: &quot;1009876543210&quot;}]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">child_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ChildType&#39;</span><span class="p">)</span>
+    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ParentId&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">child_type</span> <span class="o">==</span> <span class="s1">&#39;ACCOUNT&#39;</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_children_single_page</span><span class="p">(</span><span class="n">ParentId</span><span class="o">=</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">ChildType</span><span class="o">=</span><span class="s1">&#39;ACCOUNT&#39;</span><span class="p">)</span>
+        <span class="n">my_account_children</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Children&#39;</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_children_single_page</span><span class="p">(</span><span class="n">ParentId</span><span class="o">=</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">ChildType</span><span class="o">=</span><span class="s1">&#39;ORGANIZATIONAL_UNIT&#39;</span><span class="p">)</span>
+        <span class="n">my_org_children</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Children&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">my_org_child</span> <span class="ow">in</span> <span class="n">my_org_children</span><span class="p">:</span>
+            <span class="n">my_account_children</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_children_nested</span><span class="p">(</span><span class="n">ParentId</span><span class="o">=</span><span class="n">my_org_child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">),</span> <span class="n">ChildType</span><span class="o">=</span><span class="s1">&#39;ACCOUNT&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">my_account_children</span>
+
+    <span class="k">elif</span> <span class="n">child_type</span> <span class="o">==</span> <span class="s1">&#39;ORGANIZATIONAL_UNIT&#39;</span><span class="p">:</span>
+        <span class="n">my_account_children</span> <span class="o">=</span> <span class="p">[</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ParentId&#39;</span><span class="p">)]</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_children_single_page</span><span class="p">(</span><span class="n">ParentId</span><span class="o">=</span><span class="n">parent_id</span><span class="p">,</span> <span class="n">ChildType</span><span class="o">=</span><span class="s1">&#39;ORGANIZATIONAL_UNIT&#39;</span><span class="p">)</span>
+        <span class="n">my_org_children</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Children&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">my_org_child</span> <span class="ow">in</span> <span class="n">my_org_children</span><span class="p">:</span>
+            <span class="n">my_account_children</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_children_nested</span><span class="p">(</span><span class="n">ParentId</span><span class="o">=</span><span class="n">my_org_child</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">),</span> <span class="n">ChildType</span><span class="o">=</span><span class="s1">&#39;ORGANIZATIONAL_UNIT&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">my_account_children</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Unsupported ChildType: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">child_type</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="convert_path_to_ou"><a class="viewcode-back" href="../../betterboto/services/organizations.html#betterboto.organizations.convert_path_to_ou">[docs]</a><span class="k">def</span> <span class="nf">convert_path_to_ou</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ou</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method accepts an ou and returns the path from the root account down to the ou</span>
+
+<span class="sd">    :param self: organizations client</span>
+<span class="sd">    :param ou: the account</span>
+<span class="sd">    :return: the path from the root account down to the ou</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_roots</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Roots&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="n">r_id</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_children</span><span class="p">(</span><span class="n">ParentId</span><span class="o">=</span><span class="n">r_id</span><span class="p">,</span> <span class="n">ChildType</span><span class="o">=</span><span class="s1">&#39;ORGANIZATIONAL_UNIT&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">make_better</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">convert_path_to_ou</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">convert_path_to_ou</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">list_children_single_page</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">list_children_single_page</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">list_children_nested</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">list_children_nested</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">client</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">better-boto</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/cloudformation.html">CloudFormation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/organizations.html">Organizations helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/servicecatalog.html">Service Catalog helpers</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, eamonn faherty.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

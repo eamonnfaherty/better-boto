@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>betterboto package &#8212; better-boto 0.5.20 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="betterboto-package">
+<h1>betterboto package<a class="headerlink" href="#betterboto-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-betterboto.client">
+<span id="betterboto-client-module"></span><h2>betterboto.client module<a class="headerlink" href="#module-betterboto.client" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="betterboto.client.ClientContextManager">
+<em class="property">class </em><code class="descclassname">betterboto.client.</code><code class="descname">ClientContextManager</code><span class="sig-paren">(</span><em>service_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/client.html#ClientContextManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.client.ClientContextManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>ClientContextManager allows you to use boto3 client as a python context manager.
+This allows you to perform the following:</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="betterboto.client.CrossAccountClientContextManager">
+<em class="property">class </em><code class="descclassname">betterboto.client.</code><code class="descname">CrossAccountClientContextManager</code><span class="sig-paren">(</span><em>service_name</em>, <em>role_arn</em>, <em>role_session_name</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/client.html#CrossAccountClientContextManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.client.CrossAccountClientContextManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="betterboto.client.MultiRegionClientContextManager">
+<em class="property">class </em><code class="descclassname">betterboto.client.</code><code class="descname">MultiRegionClientContextManager</code><span class="sig-paren">(</span><em>service_name</em>, <em>regions</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/client.html#MultiRegionClientContextManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.client.MultiRegionClientContextManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="betterboto.client.make_better">
+<code class="descclassname">betterboto.client.</code><code class="descname">make_better</code><span class="sig-paren">(</span><em>service_name</em>, <em>client</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/client.html#make_better"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.client.make_better" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-betterboto.cloudformation">
+<span id="betterboto-cloudformation-module"></span><h2>betterboto.cloudformation module<a class="headerlink" href="#module-betterboto.cloudformation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="betterboto.cloudformation.create_or_update">
+<code class="descclassname">betterboto.cloudformation.</code><code class="descname">create_or_update</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/cloudformation.html#create_or_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.cloudformation.create_or_update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.cloudformation.get_hash_for_template">
+<code class="descclassname">betterboto.cloudformation.</code><code class="descname">get_hash_for_template</code><span class="sig-paren">(</span><em>template</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/cloudformation.html#get_hash_for_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.cloudformation.get_hash_for_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.cloudformation.make_better">
+<code class="descclassname">betterboto.cloudformation.</code><code class="descname">make_better</code><span class="sig-paren">(</span><em>client</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/cloudformation.html#make_better"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.cloudformation.make_better" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-betterboto.organizations">
+<span id="betterboto-organizations-module"></span><h2>betterboto.organizations module<a class="headerlink" href="#module-betterboto.organizations" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="betterboto.organizations.convert_path_to_ou">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">convert_path_to_ou</code><span class="sig-paren">(</span><em>self</em>, <em>ou</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/organizations.html#convert_path_to_ou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.convert_path_to_ou" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.organizations.list_children_nested">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">list_children_nested</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/organizations.html#list_children_nested"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.list_children_nested" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.organizations.list_children_single_page">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">list_children_single_page</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/organizations.html#list_children_single_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.list_children_single_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.organizations.make_better">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">make_better</code><span class="sig-paren">(</span><em>client</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/organizations.html#make_better"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.make_better" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-betterboto.servicecatalog">
+<span id="betterboto-servicecatalog-module"></span><h2>betterboto.servicecatalog module<a class="headerlink" href="#module-betterboto.servicecatalog" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="betterboto.servicecatalog.list_portfolios_single_page">
+<code class="descclassname">betterboto.servicecatalog.</code><code class="descname">list_portfolios_single_page</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/servicecatalog.html#list_portfolios_single_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.servicecatalog.list_portfolios_single_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.servicecatalog.list_provisioning_artifacts_single_page">
+<code class="descclassname">betterboto.servicecatalog.</code><code class="descname">list_provisioning_artifacts_single_page</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/servicecatalog.html#list_provisioning_artifacts_single_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.servicecatalog.list_provisioning_artifacts_single_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.servicecatalog.make_better">
+<code class="descclassname">betterboto.servicecatalog.</code><code class="descname">make_better</code><span class="sig-paren">(</span><em>client</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/servicecatalog.html#make_better"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.servicecatalog.make_better" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="betterboto.servicecatalog.search_products_as_admin_single_page">
+<code class="descclassname">betterboto.servicecatalog.</code><code class="descname">search_products_as_admin_single_page</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/servicecatalog.html#search_products_as_admin_single_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.servicecatalog.search_products_as_admin_single_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-betterboto.utils">
+<span id="betterboto-utils-module"></span><h2>betterboto.utils module<a class="headerlink" href="#module-betterboto.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="betterboto.utils.slurp">
+<code class="descclassname">betterboto.utils.</code><code class="descname">slurp</code><span class="sig-paren">(</span><em>name</em>, <em>func</em>, <em>response_to_concat</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/betterboto/utils.html#slurp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.utils.slurp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-betterboto">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-betterboto" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">better-boto</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, eamonn faherty.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/betterboto.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

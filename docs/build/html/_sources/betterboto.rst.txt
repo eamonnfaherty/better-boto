@@ -1,0 +1,54 @@
+betterboto package
+==================
+
+Submodules
+----------
+
+betterboto.client module
+------------------------
+
+.. automodule:: betterboto.client
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+betterboto.cloudformation module
+--------------------------------
+
+.. automodule:: betterboto.cloudformation
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+betterboto.organizations module
+-------------------------------
+
+.. automodule:: betterboto.organizations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+betterboto.servicecatalog module
+--------------------------------
+
+.. automodule:: betterboto.servicecatalog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+betterboto.utils module
+-----------------------
+
+.. automodule:: betterboto.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: betterboto
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -15,6 +15,13 @@ def make_better(service_name, client):
 
 
 class ClientContextManager(object):
+    """
+    ClientContextManager allows you to use boto3 client as a python context manager.
+    This allows you to perform the following::
+
+        with ClientContextManager('cloudformation') as cloudformation_client:
+            cloudformation_client.create_stack(**args)
+    """
     def __init__(self, service_name, **kwargs):
         super().__init__()
         self.service_name = service_name
@@ -33,6 +40,16 @@ class ClientContextManager(object):
 
 
 class MultiRegionClientContextManager(object):
+    """
+    MultiRegionClientContextManager allows you to use boto3 client as a python context manager for multiple regions.
+    This allows you to perform the following::
+
+        with MultiRegionClientContextManager('cloudformation', ['us-east-1','eu-west-1']) as cloudformation_clients:
+            for region_name, cloudformation_client in cloudformation_clients.items():
+                cloudformation_client.create_stack(**args)
+
+    If you want to deploy to multiple regions at the same time then you should use Python Threads
+    """
     def __init__(self, service_name, regions, **kwargs):
         super().__init__()
         self.service_name = service_name
@@ -58,6 +75,17 @@ class MultiRegionClientContextManager(object):
 
 
 class CrossAccountClientContextManager(object):
+    """
+    CrossAccountClientContextManager allows you to use boto3 client as a python context manager for another account.
+    This allows you to perform the following::
+
+        with CrossAccountClientContextManager(
+            'cloudformation',
+            'arn:aws:iam::0123456789010:role/deployer',
+            'deployment_account_session',
+        ) as deployment_account_cloudformation:
+            deployment_account_cloudformation.create_stack(**args)
+    """
     def __init__(self, service_name, role_arn, role_session_name, **kwargs):
         super().__init__()
         self.service_name = service_name

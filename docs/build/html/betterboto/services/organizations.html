@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Organizations helpers &#8212; better-boto 0.5.20 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Service Catalog helpers" href="servicecatalog.html" />
+    <link rel="prev" title="CloudFormation helpers" href="cloudformation.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="organizations-helpers">
+<h1>Organizations helpers<a class="headerlink" href="#organizations-helpers" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-this">
+<h2>What is this?<a class="headerlink" href="#what-is-this" title="Permalink to this headline">¶</a></h2>
+<p>The following methods are added to clients instantiated using Betterboto:</p>
+</div>
+<div class="section" id="module-betterboto.organizations">
+<span id="methods"></span><h2>Methods<a class="headerlink" href="#module-betterboto.organizations" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="betterboto.organizations.convert_path_to_ou">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">convert_path_to_ou</code><span class="sig-paren">(</span><em>self</em>, <em>ou</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/betterboto/organizations.html#convert_path_to_ou"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.convert_path_to_ou" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method accepts an ou and returns the path from the root account down to the ou</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – organizations client</p></li>
+<li><p><strong>ou</strong> – the account</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the path from the root account down to the ou</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="betterboto.organizations.list_children_nested">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">list_children_nested</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/betterboto/organizations.html#list_children_nested"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.list_children_nested" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will return a list of all children (either ACCOUNT or ORGANIZATIONAL_UNIT) for the given ParentId.  It
+includes children, grandchildren lower levels of nesting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – organizations client</p></li>
+<li><p><strong>kwargs</strong> – these are passed onto the list_children method call</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of children in the structure of [{‘Id’: “0123456789010”}, {‘Id’: “1009876543210”}]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="betterboto.organizations.list_children_single_page">
+<code class="descclassname">betterboto.organizations.</code><code class="descname">list_children_single_page</code><span class="sig-paren">(</span><em>self</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/betterboto/organizations.html#list_children_single_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#betterboto.organizations.list_children_single_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will continue to call list_children until there are no more pages left to retrieve.  It will return
+the aggregated response in the same structure as list_children does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – organizations client</p></li>
+<li><p><strong>kwargs</strong> – these are passed onto the list_children method call</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>organizations_client.list_children.response</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">better-boto</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudformation.html">CloudFormation helpers</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Organizations helpers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-this">What is this?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-betterboto.organizations">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="servicecatalog.html">Service Catalog helpers</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="cloudformation.html" title="previous chapter">CloudFormation helpers</a></li>
+      <li>Next: <a href="servicecatalog.html" title="next chapter">Service Catalog helpers</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, eamonn faherty.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/betterboto/services/organizations.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>betterboto.cloudformation &#8212; better-boto 0.5.20 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for betterboto.cloudformation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">botocore</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_hash_for_template</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>
+    <span class="n">hasher</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="n">hasher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">template</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">hasher</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="create_or_update"><a class="viewcode-back" href="../../betterboto/services/cloudformation.html#betterboto.cloudformation.create_or_update">[docs]</a><span class="k">def</span> <span class="nf">create_or_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    For the given template and stack name, this method will create a stack if it doesnt already exist otherwise it will</span>
+<span class="sd">    generate a changeset and then execute it.  This method will wait for the operation to complete before returning and</span>
+<span class="sd">    in the instance of an error it will print out the stack events to help you debug more easily.</span>
+
+<span class="sd">    :param self: cloudformation client</span>
+<span class="sd">    :param kwargs: these are passed onto the create_stack and create_change_set method calls</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stack_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;StackName&#39;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating or updating: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+
+    <span class="n">is_first_run</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">describe_stacks</span><span class="p">(</span>
+            <span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span>
+        <span class="p">)</span>
+        <span class="n">is_first_run</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="bp">self</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ClientError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;Stack with id </span><span class="si">{}</span><span class="s2"> does not exist&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">if</span> <span class="n">is_first_run</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Creating: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_stack</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">waiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_waiter</span><span class="p">(</span><span class="s1">&#39;stack_create_complete&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">waiter</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe_stack_events</span><span class="p">(</span><span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">stack_event</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;StackEvents&#39;</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">stack_event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ResourceStatus&#39;</span><span class="p">),</span>
+                    <span class="n">stack_event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ResourceStatusReason&#39;</span><span class="p">),</span>
+                <span class="p">))</span>
+            <span class="k">raise</span> <span class="n">e</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updating: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+        <span class="n">change_set_name</span> <span class="o">=</span> <span class="n">get_hash_for_template</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;TemplateBody&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_change_set</span><span class="p">(</span>
+            <span class="n">ChangeSetName</span><span class="o">=</span><span class="n">change_set_name</span><span class="p">,</span>
+            <span class="n">ChangeSetType</span><span class="o">=</span><span class="s2">&quot;UPDATE&quot;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">change_set_create_complete_waiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_waiter</span><span class="p">(</span><span class="s1">&#39;change_set_create_complete&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">change_set_create_complete_waiter</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span>
+                <span class="n">ChangeSetName</span><span class="o">=</span><span class="n">change_set_name</span><span class="p">,</span>
+                <span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">botocore</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">WaiterError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;Waiter ChangeSetCreateComplete failed: Waiter encountered a terminal failure state&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Describing change set: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe_change_set</span><span class="p">(</span>
+            <span class="n">ChangeSetName</span><span class="o">=</span><span class="n">change_set_name</span><span class="p">,</span>
+            <span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span>
+        <span class="p">)</span>
+        <span class="n">change_set</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Changes&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Changes:&#39;</span> <span class="o">+</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">change_set</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">change_set</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Executing change set: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute_change_set</span><span class="p">(</span>
+                <span class="n">ChangeSetName</span><span class="o">=</span><span class="n">change_set_name</span><span class="p">,</span>
+                <span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Waiting for change set to execute: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+            <span class="n">waiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_waiter</span><span class="p">(</span><span class="s1">&#39;stack_update_complete&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">waiter</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">describe_stack_events</span><span class="p">(</span><span class="n">StackName</span><span class="o">=</span><span class="n">stack_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">stack_event</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;StackEvents&#39;</span><span class="p">):</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">stack_event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ResourceStatus&#39;</span><span class="p">),</span>
+                        <span class="n">stack_event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ResourceStatusReason&#39;</span><span class="p">),</span>
+                    <span class="p">))</span>
+                <span class="k">raise</span> <span class="n">e</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No changes to build for stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Finished stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stack_name</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">make_better</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">create_or_update</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">create_or_update</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">client</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">better-boto</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/client.html">Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/cloudformation.html">CloudFormation helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/organizations.html">Organizations helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../betterboto/services/servicecatalog.html">Service Catalog helpers</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, eamonn faherty.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
