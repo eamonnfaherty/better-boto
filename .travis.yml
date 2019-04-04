@@ -15,6 +15,7 @@ deploy:
     on:
       tags: true
       repo: eamonnfaherty/better-boto
+      all_branches: true
   password:
     secure: Vr0p9r/PVS8qIC4E1WbImzMkL+7UQuSnosKaf853BjcW27rDVNqPCAJ1GIoPTryLqoPBtigA9eDSrmd79A5yTNb38SlgicJFiTEULs8nI8CS0BqizjHH+G7G8KbaDWyYMZhPtI0E+a2fF5tVsInvFz6zTpLNt8MLGjbEx6ka+7qNXXPBdCfAdYZmEGdIxuNS0x/wHWDTR4FJgdI9En1JftJZJx714tlYmmFeRcC3zX1aTYVH23txrmE6rjdCvmJqFn6fd+jh+LOzaqPpKpVsmn+Py/wYETz7lYPW8m2PMmIBrzp0xY7NTyJ1ZxRfAKA5D/iyYGyXUis0GQ2hNKfTDoynhwgI//XTDmGiEmcVGpdMcfHkRIkGMMhxvq6wn9WVmO2mq3izt/yG9hw8g/rlc055i5nzNHUWA5Ehxlc3ORxDGbPi8HGTZoKchveHUrPhIw/XN/8t5aQhlkRzM2MBNML8KO0MNHN3Z0vlrbyIOXcPp+v7NisnUISDAy3xv9Rr4JOFNyjSpjGood+cQbsUaxswq7iiphKboMjU96Y2Fw+BKFIBYDm9kd5DkDBpcJ/1Y+vSGCnFzJA117y5VT6UkDWGq7OgZdLVAvdSni98ItOpxhWUojEtu2W8Q6Q7y0jRld0M2hSph4zdJbZV9ZitWADwl2RRP96xH46bChJ/DoY=
   user:
