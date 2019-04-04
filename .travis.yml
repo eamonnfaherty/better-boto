@@ -7,9 +7,6 @@ script:
 - echo "hello world"
 before_deploy:
 - python setup.py sdist
-- pip install sphinx
-- pip install recommonmark
-- cd docs && make html && cd -
 deploy:
   - provider: pypi
     password:
@@ -18,16 +15,6 @@ deploy:
       secure: aTt3ByZpYhvtt/kRG7GkBpuZacQouZ2ZpalRFzsGq09H/Q+lN/1eIwMwOTDiQjFVCpuCwJmwU5+5kZXHvnBXyXnPjZEzIIgZJN7LIeIvMW5814l7a1ZUG3hJKoDHi8YZiv9Z6BX5FzkANdHG/80EF0R0j6XrxGSB+NAgr9N/Avj5uJ7WA423MyGB4MmZ2NMtvY+TuLg1hl81cPZP1UdicZODXQ3HFGs10Kyj8g6mk0WVovboa2AtxUcxfWNfnRg20QsxHFvqxlrRwC8ErmM0ggtYgqNpDU6mUx/ckUN7/jtErwBqrfPqtHHC8v+ZG7PBR2Xq+8cJjFxP5FWKnuLFKmX6xFkj9XElu02Ed8O9iEjH+cqDUv7wZ9621e+HPmHuRPEGJJ+PfOVOb+dvz8WhtF6Akym3Vb4OK3ogf7p75fY3W+GH5N/krgTTgqC/DHwCVWHIWTEGRLQiu7XsZC7gq4YVT1g4nn8M9Pe/yZYtNeCqvo02i+zeS7vWa9QOOMKpbGC1bhMV0P0dZlQhScjbHd2cn6uz9DMVBGePeEkOG6qvemJ5JBaoGUQFPWmhqDm+uctn1kHalbXGew8FQGLdRSZTcNZVAHe4ZLubBv0YEDYL3gBUQQ86YWV/CnhJW5HNJJlV5lI8VM32XTXgXrFkSO5wyRthMQqvObjkf6LYLgs=
     skip_cleanup: true
     distributions: sdist bdist_wheel
-    on:
-      tags: true
-      repo: eamonnfaherty/better-boto
-      all_branches: true
-  - provider: pages
-    skip_cleanup: true
-    keep_history: true
-    github_token:
-      secure: lvg5s3bfEAN8YPluQbsQ2QoxqYkoCaFcUtTwtrWBFnGPhYwIIaLeqx5IActUaUAk0pujTJq7O37hLfrNm4iNFL7XHvxgV2qSqrjTvaE3tMsvENI0zaaN2jrAJIbesLu4UDQxdAJ5n+D7tCww4gLVXFs73cz+43ubpKs8OTmxXcEkcPjKzgvBMzsyDbO0yITCSL70/h+q4ma2bykeo1txU/acCM1xJimK2Qjf6O9BUQyvqCNAbnAhGygRDpaiolhvZ0DU1JukltaHjOQBQ1xywmS+aMCsq8u3ZkjS+84yPjz111DjkkGv9R6cbrPoqy/dUCRDizgs5AVmEts9qOknEGwNYtyLhDCAxz98BI+GDCy1WI4v7LDTnVmIq2ZNoR24Z30qdT/K5/OBeW/w+pzcMdk1oMSbfJZ1IGYenXDDIqsRo1GOVWPvQU94+iDLp5zeSNB0XFZNzHsJT5qXpvj2GNwZADPpHHZJdCeXz+4ThLboROsqE5bV4iSs4/6tdAmYA+8HTKsG/jJagh06YE5QxnN3kzl80ouLvaMtoV2oyuHAmzBk7x8xPhdXt+ZWjXaesAV+mncSoJDAjZx7b7xZLr99habUD+HdRXZl7ewu2siuHHXh+k7xgeAzLcZcmflQKCywLDXIsR7ZVoVbBZRmNPuAf87of+NL6KSUF+9nnLo=
-    local_dir: docs/build/html
     on:
       tags: true
       repo: eamonnfaherty/better-boto
