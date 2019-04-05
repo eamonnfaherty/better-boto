@@ -1,6 +1,5 @@
 import types
 import logging
-from copy import copy
 
 from .utils import slurp
 

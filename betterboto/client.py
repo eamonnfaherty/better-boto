@@ -1,7 +1,7 @@
-import boto3
 from . import cloudformation
 from . import servicecatalog
 from . import organizations
+from boto3.session import Session
 
 
 def make_better(service_name, client):
@@ -28,7 +28,7 @@ class ClientContextManager(object):
         self.kwargs = kwargs
 
     def __enter__(self):
-        self.client = boto3.client(
+        self.client = Session().client(
             self.service_name,
             **self.kwargs
         )
@@ -61,7 +61,7 @@ class MultiRegionClientContextManager(object):
         for region in self.regions:
             c = make_better(
                 self.service_name,
-                boto3.client(
+                Session().client(
                     self.service_name,
                     region_name=region,
                     **self.kwargs
@@ -94,7 +94,7 @@ class CrossAccountClientContextManager(object):
         self.kwargs = kwargs
 
     def __enter__(self):
-        sts = boto3.client('sts')
+        sts = Session().client('sts')
         assumed_role_object = sts.assume_role(
             RoleArn=self.role_arn,
             RoleSessionName=self.role_session_name,
@@ -108,7 +108,7 @@ class CrossAccountClientContextManager(object):
         }
         if self.kwargs is not None:
             kwargs.update(self.kwargs)
-        self.client = boto3.client(**kwargs)
+        self.client = Session().client(**kwargs)
         self.client = make_better(self.service_name, self.client)
         return self.client
 
