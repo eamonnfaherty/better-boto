@@ -13,32 +13,28 @@ def get_hash_for_template(template):
     return "{}{}".format('a', hasher.hexdigest())
 
 
-def create_or_update(self, force_changeset_usage=False, **kwargs):
+def create_or_update(self, **kwargs):
     """
     For the given template and stack name, this method will create a stack if it doesnt already exist otherwise it will
     generate a changeset and then execute it.  This method will wait for the operation to complete before returning and
     in the instance of an error it will print out the stack events to help you debug more easily.
 
     :param self: cloudformation client
-    :param force_changeset_usage: if set to true CloudFormation will always use a changeset even on creation of a stack
     :param kwargs: these are passed onto the create_stack and create_change_set method calls
     :return: None
     """
     stack_name = kwargs.get('StackName')
     logger.info('Creating or updating: {}'.format(stack_name))
 
-    if force_changeset_usage:
+    is_first_run = True
+    try:
+        self.describe_stacks(
+            StackName=stack_name
+        )
         is_first_run = False
-    else:
-        is_first_run = True
-        try:
-            self.describe_stacks(
-                StackName=stack_name
-            )
-            is_first_run = False
-        except self.exceptions.ClientError as e:
-            if "Stack with id {} does not exist".format(stack_name) not in str(e):
-                raise e
+    except self.exceptions.ClientError as e:
+        if "Stack with id {} does not exist".format(stack_name) not in str(e):
+            raise e
 
     if is_first_run:
         logger.info('Creating: {}'.format(stack_name))
