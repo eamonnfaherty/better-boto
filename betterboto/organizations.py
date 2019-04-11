@@ -141,6 +141,7 @@ def convert_path_to_ou(self, path):
 
 
 def make_better(client):
+    client.list_accounts_single_page = types.MethodType(list_accounts_single_page, client)
     client.find_match = types.MethodType(find_match, client)
     client.build_ou_tree_branch = types.MethodType(build_ou_tree_branch, client)
     client.convert_path_to_ou = types.MethodType(convert_path_to_ou, client)
