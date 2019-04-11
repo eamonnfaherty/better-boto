@@ -1,6 +1,7 @@
 from . import cloudformation
 from . import servicecatalog
 from . import organizations
+from . import guardduty
 from boto3.session import Session
 
 
@@ -11,6 +12,8 @@ def make_better(service_name, client):
         return servicecatalog.make_better(client)
     elif service_name == 'organizations':
         return organizations.make_better(client)
+    elif service_name == 'guardduty':
+        return guardduty.make_better(client)
     return client
 
 
