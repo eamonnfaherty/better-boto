@@ -7,6 +7,23 @@ from .utils import slurp
 logger = logging.getLogger(__file__)
 
 
+def list_accounts_single_page(self, **kwargs):
+    """
+    This will continue to call list_accounts until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_accounts does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_accounts method call
+    :return: organizations_client.list_accounts.response
+    """
+    return slurp(
+        'list_accounts',
+        self.list_accounts,
+        'Accounts',
+        **kwargs
+    )
+
+
 def list_children_single_page(self, **kwargs):
     """
     This will continue to call list_children until there are no more pages left to retrieve.  It will return
