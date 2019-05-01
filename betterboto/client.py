@@ -105,12 +105,12 @@ class CrossAccountClientContextManager(object):
             RoleArn=self.role_arn,
             RoleSessionName=self.role_session_name,
         )
-        credentials = assumed_role_object['Credentials']
+        self.credentials = assumed_role_object['Credentials']
         kwargs = {
             "service_name": self.service_name,
-            "aws_access_key_id": credentials['AccessKeyId'],
-            "aws_secret_access_key": credentials['SecretAccessKey'],
-            "aws_session_token": credentials['SessionToken'],
+            "aws_access_key_id": self.credentials['AccessKeyId'],
+            "aws_secret_access_key": self.credentials['SecretAccessKey'],
+            "aws_session_token": self.credentials['SessionToken'],
         }
         if self.kwargs is not None:
             kwargs.update(self.kwargs)
