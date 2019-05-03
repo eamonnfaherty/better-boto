@@ -5,6 +5,10 @@ from . import guardduty
 from . import codebuild
 from boto3.session import Session
 
+import logging
+
+logger = logging.getLogger(__file__)
+
 
 def make_better(service_name, client):
     if service_name == 'cloudformation':
@@ -115,6 +119,51 @@ class CrossAccountClientContextManager(object):
         if self.kwargs is not None:
             kwargs.update(self.kwargs)
         self.client = Session().client(**kwargs)
+        self.client = make_better(self.service_name, self.client)
+        return self.client
+
+    def __exit__(self, *args, **kwargs):
+        self.client = None
+
+
+class CrossMultipleAccountsClientContextManager(object):
+    """
+    CrossMultipleAccountsClientContextManager allows you to use boto3 client as a python context manager for another account.
+    This allows you to perform the following::
+
+        with CrossMultipleAccountsClientContextManager(
+            'cloudformation',
+            [
+                ('arn:aws:iam::0123456789010:role/deployer', 'deployment_account_session'),
+                ('arn:aws:iam::097167856333:role/deployer', 'deployment_account_session_nested'),
+            ],
+        ) as deployment_account_cloudformation:
+            deployment_account_cloudformation.create_stack(**args)
+    """
+    def __init__(self, service_name, assumable_details, **kwargs):
+        super().__init__()
+        self.service_name = service_name
+        self.assumable_details = assumable_details
+        self.kwargs = kwargs
+
+    def __enter__(self):
+        credentials = {}
+        for assumable_detail in self.assumable_details:
+            role_arn, role_session_name = assumable_detail
+            logger.info('About to assume: {} with session name: {}'.format(role_arn, role_session_name))
+            sts = Session().client('sts', **credentials)
+            assumed_role_object = sts.assume_role(
+                RoleArn=role_arn,
+                RoleSessionName=role_session_name,
+            )
+            new_credentials = assumed_role_object['Credentials']
+            credentials = {
+                "aws_access_key_id": new_credentials['AccessKeyId'],
+                "aws_secret_access_key": new_credentials['SecretAccessKey'],
+                "aws_session_token": new_credentials['SessionToken'],
+            }
+
+        self.client = Session().client(self.client, **credentials)
         self.client = make_better(self.service_name, self.client)
         return self.client
 
