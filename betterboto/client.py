@@ -163,7 +163,7 @@ class CrossMultipleAccountsClientContextManager(object):
                 "aws_session_token": new_credentials['SessionToken'],
             }
 
-        self.client = Session().client(self.client, **credentials)
+        self.client = Session().client(self.service_name, **credentials)
         self.client = make_better(self.service_name, self.client)
         return self.client
 
