@@ -20,6 +20,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
+        "boto3",
         "pyyaml>=4.2b1",
     ],
 )
