@@ -41,6 +41,24 @@ def list_children_single_page(self, **kwargs):
     )
 
 
+def list_organizational_units_for_parent_single_page(self, **kwargs):
+    """
+    This will continue to call list_organizational_units_for_parent until there are no more pages left to retrieve.
+    It will return the aggregated response in the same structure as list_organizational_units_for_parent does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_organizational_units_for_parent method call
+    :return: organizations_client.list_organizational_units_for_parent.response
+    """
+    return slurp(
+        'list_organizational_units_for_parent',
+        self.list_organizational_units_for_parent,
+        'OrganizationalUnits',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
 def list_children_nested(self, **kwargs):
     """
     This method will return a list of all children (either ACCOUNT or ORGANIZATIONAL_UNIT) for the given ParentId.  It
@@ -92,7 +110,7 @@ def build_ou_tree_branch(self, parent_id):
 def find_match(self, parts, parent_id):
     part_looking_for = parts.pop()
     logger.info('Now looking for: {} in: {}'.format(part_looking_for, parent_id))
-    response = self.list_organizational_units_for_parent(ParentId=parent_id)
+    response = self.list_organizational_units_for_parent_single_page(ParentId=parent_id)
     for organizational_unit in response.get('OrganizationalUnits', []):
         logger.info("Described: {}".format(organizational_unit))
         if organizational_unit.get('Name') == part_looking_for:
@@ -128,8 +146,11 @@ def convert_path_to_ou(self, path):
         response = self.list_roots()
         for root in response.get('Roots', []):
             child_id = root.get('Id')
-            response = self.list_organizational_units_for_parent(ParentId=child_id)
+            print(child_id)
+            response = self.list_organizational_units_for_parent_single_page(ParentId=child_id)
+            print(response)
             for organizational_unit in response.get('OrganizationalUnits', []):
+                print(organizational_unit)
                 if organizational_unit.get('Name') == part_looking_for:
                     logger.debug('Found {}: in {}'.format(part_looking_for, organizational_unit.get('Id')))
                     if len(parts) > 0:
@@ -147,4 +168,5 @@ def make_better(client):
     client.convert_path_to_ou = types.MethodType(convert_path_to_ou, client)
     client.list_children_single_page = types.MethodType(list_children_single_page, client)
     client.list_children_nested = types.MethodType(list_children_nested, client)
+    client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
     return client
