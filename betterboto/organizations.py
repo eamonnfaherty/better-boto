@@ -7,6 +7,23 @@ from .utils import slurp
 logger = logging.getLogger(__file__)
 
 
+def search_products_as_admin_single_page(self, **kwargs):
+    """
+    This will continue to call search_products_as_admin until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as search_products_as_admin does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the search_products_as_admin method call
+    :return: organizations_client.search_products_as_admin.response
+    """
+    return slurp(
+        'search_products_as_admin',
+        self.search_products_as_admin,
+        'ProductViewDetails',
+        **kwargs
+    )
+
+
 def list_accounts_single_page(self, **kwargs):
     """
     This will continue to call list_accounts until there are no more pages left to retrieve.  It will return
@@ -169,4 +186,5 @@ def make_better(client):
     client.list_children_single_page = types.MethodType(list_children_single_page, client)
     client.list_children_nested = types.MethodType(list_children_nested, client)
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
+    client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
     return client
