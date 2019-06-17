@@ -17,3 +17,7 @@ help using AWS Organizations.  Check out the [docs](https://better-boto.readthed
 [![Build Status](https://travis-ci.org/eamonnfaherty/better-boto.svg?branch=master)](https://travis-ci.org/eamonnfaherty/better-boto)
 
 [![Docs Status](https://readthedocs.org/projects/better-boto/badge/?version=latest)](https://better-boto.readthedocs.io/en/latest/)
+
+
+
+
