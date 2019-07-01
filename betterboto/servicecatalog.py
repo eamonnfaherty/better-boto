@@ -58,8 +58,26 @@ def list_provisioning_artifacts_single_page(self, **kwargs):
     )
 
 
+def list_portfolios_for_product_single_page(self, **kwargs):
+    """
+    This will continue to call list_portfolios_for_product until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_portfolios_for_product does.
+
+    :param self: servicecatalog client
+    :param kwargs: these are passed onto the list_portfolios_for_product method call
+    :return: servicecatalog_client.list_portfolios_for_product.response
+    """
+    return slurp(
+        'list_portfolios_for_product',
+        self.list_portfolios_for_product,
+        'PortfolioDetails',
+        **kwargs
+    )
+
+
 def make_better(client):
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
     client.list_portfolios_single_page = types.MethodType(list_portfolios_single_page, client)
     client.list_provisioning_artifacts_single_page = types.MethodType(list_provisioning_artifacts_single_page, client)
+    client.list_portfolios_for_product_single_page = types.MethodType(list_portfolios_for_product_single_page, client)
     return client
