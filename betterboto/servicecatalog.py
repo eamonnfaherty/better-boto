@@ -75,9 +75,27 @@ def list_portfolios_for_product_single_page(self, **kwargs):
     )
 
 
+def list_provisioned_product_plans_single_page(self, **kwargs):
+    """
+    This will continue to call list_provisioned_product_plans until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_provisioned_product_plans does.
+
+    :param self: servicecatalog client
+    :param kwargs: these are passed onto the list_provisioned_product_plans method call
+    :return: servicecatalog_client.list_provisioned_product_plans.response
+    """
+    return slurp(
+        'list_provisioned_product_plans',
+        self.list_provisioned_product_plans,
+        'ProvisionedProductPlans',
+        **kwargs
+    )
+
+
 def make_better(client):
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
     client.list_portfolios_single_page = types.MethodType(list_portfolios_single_page, client)
     client.list_provisioning_artifacts_single_page = types.MethodType(list_provisioning_artifacts_single_page, client)
     client.list_portfolios_for_product_single_page = types.MethodType(list_portfolios_for_product_single_page, client)
+    client.list_provisioned_product_plans_single_page = types.MethodType(list_provisioned_product_plans_single_page(), client)
     return client
