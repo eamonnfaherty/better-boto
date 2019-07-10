@@ -97,5 +97,5 @@ def make_better(client):
     client.list_portfolios_single_page = types.MethodType(list_portfolios_single_page, client)
     client.list_provisioning_artifacts_single_page = types.MethodType(list_provisioning_artifacts_single_page, client)
     client.list_portfolios_for_product_single_page = types.MethodType(list_portfolios_for_product_single_page, client)
-    client.list_provisioned_product_plans_single_page = types.MethodType(list_provisioned_product_plans_single_page(), client)
+    client.list_provisioned_product_plans_single_page = types.MethodType(list_provisioned_product_plans_single_page, client)
     return client
