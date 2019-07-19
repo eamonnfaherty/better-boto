@@ -1,5 +1,5 @@
 GuardDuty helpers
-======================
+=================
 
 .. include:: ../services_header.rst
 
