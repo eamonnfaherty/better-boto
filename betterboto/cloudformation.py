@@ -3,6 +3,7 @@ import logging
 import hashlib
 import botocore
 import yaml
+from .utils import slurp
 
 logger = logging.getLogger(__file__)
 
@@ -99,6 +100,51 @@ def create_or_update(self, **kwargs):
             logger.info('Finished stack: {}'.format(stack_name))
 
 
+def describe_stacks_single_page(self, **kwargs):
+    """
+    This will continue to call describe_stacks until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as describe_stacks does.
+
+    :param self: servicecatalog client
+    :param kwargs: these are passed onto the describe_stacks method call
+    :return: servicecatalog_client.describe_stacks.response
+    """
+    return slurp(
+        'describe_stacks',
+        self.describe_stacks,
+        'Stacks',
+        next_token_name_in_response='NextToken',
+        next_token_name_in_request='NextToken',
+        **kwargs
+    )
+
+
+def ensure_deleted(self, stack_name):
+    stacks = self.describe_stacks_single_page(
+        StackName=stack_name,
+    ).get('Stacks')
+    for stack in stacks:
+        if stack.get('StackStatus') in [
+            'CREATE_FAILED','CREATE_COMPLETE','ROLLBACK_FAILED','ROLLBACK_COMPLETE','DELETE_FAILED', 'UPDATE_COMPLETE',
+            'UPDATE_ROLLBACK_FAILED','UPDATE_ROLLBACK_COMPLETE',
+        ]:
+            self.delete_stack(StackName=stack_name)
+            waiter = self.get_waiter('stack_delete_complete')
+            try:
+                waiter.wait(StackName=stack_name)
+            except Exception as e:
+                response = self.describe_stack_events(StackName=stack_name)
+                for stack_event in response.get('StackEvents'):
+                    logger.error('{}: {}'.format(
+                        stack_event.get('ResourceStatus'),
+                        stack_event.get('ResourceStatusReason'),
+                    ))
+                raise e
+            logger.info('Finished ensure deleted: {}'.format(stack_name))
+
+
 def make_better(client):
     client.create_or_update = types.MethodType(create_or_update, client)
+    client.describe_stacks_single_page = types.MethodType(describe_stacks_single_page, client)
+    client.ensure_deleted = types.MethodType(ensure_deleted, client)
     return client
