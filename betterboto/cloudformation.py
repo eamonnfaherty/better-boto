@@ -119,28 +119,28 @@ def describe_stacks_single_page(self, **kwargs):
     )
 
 
-def ensure_deleted(self, stack_name):
+def ensure_deleted(self, StackName):
     stacks = self.describe_stacks_single_page(
-        StackName=stack_name,
+        StackName=StackName,
     ).get('Stacks')
     for stack in stacks:
         if stack.get('StackStatus') in [
             'CREATE_FAILED','CREATE_COMPLETE','ROLLBACK_FAILED','ROLLBACK_COMPLETE','DELETE_FAILED', 'UPDATE_COMPLETE',
             'UPDATE_ROLLBACK_FAILED','UPDATE_ROLLBACK_COMPLETE',
         ]:
-            self.delete_stack(StackName=stack_name)
+            self.delete_stack(StackName=StackName)
             waiter = self.get_waiter('stack_delete_complete')
             try:
-                waiter.wait(StackName=stack_name)
+                waiter.wait(StackName=StackName)
             except Exception as e:
-                response = self.describe_stack_events(StackName=stack_name)
+                response = self.describe_stack_events(StackName=StackName)
                 for stack_event in response.get('StackEvents'):
                     logger.error('{}: {}'.format(
                         stack_event.get('ResourceStatus'),
                         stack_event.get('ResourceStatusReason'),
                     ))
                 raise e
-            logger.info('Finished ensure deleted: {}'.format(stack_name))
+            logger.info('Finished ensure deleted: {}'.format(StackName))
 
 
 def make_better(client):
