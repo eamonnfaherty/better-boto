@@ -120,14 +120,33 @@ def describe_stacks_single_page(self, **kwargs):
 
 
 def ensure_deleted(self, StackName):
-    stacks = self.describe_stacks_single_page(
-        StackName=StackName,
-    ).get('Stacks')
+    """
+    This will check if there is a stack with the given StackName in a state that can be deleted. If there is, it will
+    delete it.
+
+    :param self: cloudformation client
+    :param StackName: This is the name of the stack that should be deleted
+    :return: None
+    """
+    logger.info('Ensuring: {} is deleted'.format(StackName))
+    try:
+        stacks = self.describe_stacks_single_page(
+            StackName=StackName,
+        ).get('Stacks')
+    except self.exceptions.ClientError as e:
+        code = e.response.get("Error", {}).get("Code")
+        message = e.response.get("Error", {}).get("Message")
+        if code == "ValidationError" and message == "Stack with id {} does not exist".format(StackName):
+            logger.info("Stack: {} does not exist".format(StackName))
+            return
+        raise e
+
     for stack in stacks:
         if stack.get('StackStatus') in [
             'CREATE_FAILED','CREATE_COMPLETE','ROLLBACK_FAILED','ROLLBACK_COMPLETE','DELETE_FAILED', 'UPDATE_COMPLETE',
             'UPDATE_ROLLBACK_FAILED','UPDATE_ROLLBACK_COMPLETE',
         ]:
+            logger.info('Going to delete stack: {}'.format(stack.get('StackId')))
             self.delete_stack(StackName=StackName)
             waiter = self.get_waiter('stack_delete_complete')
             try:
