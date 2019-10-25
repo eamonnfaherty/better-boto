@@ -37,6 +37,7 @@ def list_accounts_single_page(self, **kwargs):
         'list_accounts',
         self.list_accounts,
         'Accounts',
+        'NextToken', 'NextToken',
         **kwargs
     )
 
@@ -54,6 +55,7 @@ def list_children_single_page(self, **kwargs):
         'list_children',
         self.list_children,
         'Children',
+        'NextToken', 'NextToken',
         **kwargs
     )
 
