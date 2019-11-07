@@ -26,5 +26,5 @@ def get_log_events_single_page(self, **kwargs):
 
 
 def make_better(client):
-    client.get_log_events = types.MethodType(get_log_events_single_page, client)
+    client.get_log_events_single_page = types.MethodType(get_log_events_single_page, client)
     return client
