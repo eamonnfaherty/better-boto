@@ -7,6 +7,23 @@ from .utils import slurp
 logger = logging.getLogger(__file__)
 
 
+def list_accepted_portfolio_shares_single_page(self, **kwargs):
+    """
+    This will continue to call list_accepted_portfolio_shares until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_accepted_portfolio_shares does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_accepted_portfolio_shares method call
+    :return: organizations_client.list_accepted_portfolio_shares.response
+    """
+    return slurp(
+        'list_accepted_portfolio_shares',
+        self.list_accepted_portfolio_shares,
+        'PortfolioDetails',
+        **kwargs
+    )
+
+
 def search_products_as_admin_single_page(self, **kwargs):
     """
     This will continue to call search_products_as_admin until there are no more pages left to retrieve.  It will return
@@ -189,4 +206,5 @@ def make_better(client):
     client.list_children_nested = types.MethodType(list_children_nested, client)
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
+    client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page, client)
     return client
