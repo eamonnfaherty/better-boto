@@ -4,6 +4,7 @@ from . import organizations
 from . import guardduty
 from . import codebuild
 from . import codecommit
+from . import ssm
 from boto3.session import Session
 
 import logging
@@ -24,6 +25,8 @@ def make_better(service_name, client):
         return codebuild.make_better(client)
     elif service_name == 'codecommit':
         return codecommit.make_better(client)
+    elif service_name == 'ssm':
+        return ssm.make_better(client)
     return client
 
 
