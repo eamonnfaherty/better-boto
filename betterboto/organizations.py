@@ -175,7 +175,8 @@ def convert_path_to_ou(self, path):
         root = response.get('Roots')[0]
         return root.get('Id')
     else:
-        parts = path.split("/")
+        # You get the name of the ou back, including /'s
+        parts = list(filter(None, path.split("/"))) 
         parts.reverse()
         parts.pop()
         part_looking_for = parts.pop()
