@@ -28,7 +28,13 @@ def put_parameter_and_wait(self, Name, **kwargs):
         if count > put_parameter_and_wait_max_retries:
             raise Exception(f"Putting and waiting for param {Name} failed")
         time.sleep(1)
-        current_parameter = self.get_parameter(Name=Name)
+        if new_version == 1:
+            try:
+                current_parameter = self.get_parameter(Name=Name)
+            except self.exceptions.ParameterNotFound:
+                pass
+        else:
+            current_parameter = self.get_parameter(Name=Name)
     return current_parameter
 
 
