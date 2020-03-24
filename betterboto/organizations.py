@@ -95,6 +95,24 @@ def list_organizational_units_for_parent_single_page(self, **kwargs):
     )
 
 
+def list_parents_single_page(self, **kwargs):
+    """
+    This will continue to call list_parents until there are no more pages left to retrieve.
+    It will return the aggregated response in the same structure as list_parents does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_parents method call
+    :return: organizations_client.list_parents.response
+    """
+    return slurp(
+        'list_parents',
+        self.list_parents,
+        'Parents',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
 def list_children_nested(self, **kwargs):
     """
     This method will return a list of all children (either ACCOUNT or ORGANIZATIONAL_UNIT) for the given ParentId.  It
@@ -205,6 +223,7 @@ def make_better(client):
     client.list_children_single_page = types.MethodType(list_children_single_page, client)
     client.list_children_nested = types.MethodType(list_children_nested, client)
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
+    client.list_parents_single_page = types.MethodType(list_parents_single_page, client)
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
     client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page, client)
     return client
