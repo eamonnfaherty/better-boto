@@ -162,8 +162,28 @@ def ensure_deleted(self, StackName):
             logger.info('Finished ensure deleted: {}'.format(StackName))
 
 
+def list_stacks_single_page(self, **kwargs):
+    """
+    This will continue to call list_stacks until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_stacks does.
+
+    :param self: servicecatalog client
+    :param kwargs: these are passed onto the list_stacks method call
+    :return: servicecatalog_client.list_stacks.response
+    """
+    return slurp(
+        'list_stacks',
+        self.list_stacks,
+        'Stacks',
+        next_token_name_in_response='NextToken',
+        next_token_name_in_request='NextToken',
+        **kwargs
+    )
+
+
 def make_better(client):
     client.create_or_update = types.MethodType(create_or_update, client)
     client.describe_stacks_single_page = types.MethodType(describe_stacks_single_page, client)
     client.ensure_deleted = types.MethodType(ensure_deleted, client)
+    client.list_stacks_single_page = types.MethodType(list_stacks_single_page, client)
     return client
