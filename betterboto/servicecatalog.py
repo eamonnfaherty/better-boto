@@ -155,6 +155,22 @@ def list_accepted_portfolio_shares_single_page(self, **kwargs):
         **kwargs
     )
 
+def scan_provisioned_products_single_page(self, **kwargs):
+    """
+    This will continue to call scan_provisioned_products until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as scan_provisioned_products does.
+
+    :param self: servicecatalog client
+    :param kwargs: these are passed onto the scan_provisioned_products method call
+    :return: servicecatalog_client.scan_provisioned_products.response
+    """
+    return slurp(
+        'scan_provisioned_products',
+        self.scan_provisioned_products,
+        'ProvisionedProducts',
+        **kwargs
+    )
+
 
 def make_better(client):
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
@@ -166,4 +182,5 @@ def make_better(client):
     client.list_launch_paths_single_page = types.MethodType(list_launch_paths_single_page, client)
     client.list_principals_for_portfolio_single_page = types.MethodType(list_principals_for_portfolio_single_page, client)
     client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page, client)
+    client.scan_provisioned_products_single_page = types.MethodType(scan_provisioned_products_single_page, client)
     return client
