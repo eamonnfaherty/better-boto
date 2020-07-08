@@ -2,6 +2,7 @@ import types
 import logging
 import hashlib
 import botocore
+import time
 import yaml
 from .utils import slurp
 
@@ -53,7 +54,7 @@ def create_or_update(self, **kwargs):
             raise e
     else:
         logger.info('Updating: {}'.format(stack_name))
-        change_set_name = get_hash_for_template(kwargs.get('TemplateBody', kwargs.get('TemplateURL')))
+        change_set_name = f"change-{str(time.time())}"
         self.create_change_set(
             ChangeSetName=change_set_name,
             ChangeSetType="UPDATE",
