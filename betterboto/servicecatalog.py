@@ -3,7 +3,6 @@ import logging
 
 from .utils import slurp
 
-
 logger = logging.getLogger(__file__)
 
 
@@ -22,6 +21,7 @@ def search_products_as_admin_single_page(self, **kwargs):
         'ProductViewDetails',
         **kwargs
     )
+
 
 def list_principals_for_portfolio_single_page(self, **kwargs):
     """
@@ -107,6 +107,7 @@ def list_provisioned_product_plans_single_page(self, **kwargs):
         **kwargs
     )
 
+
 def search_provisioned_products_single_page(self, **kwargs):
     """
     This will continue to call search_provisioned_products until there are no more pages left to retrieve.  It will return
@@ -122,6 +123,7 @@ def search_provisioned_products_single_page(self, **kwargs):
         'ProvisionedProducts',
         **kwargs
     )
+
 
 def list_launch_paths_single_page(self, **kwargs):
     """
@@ -139,6 +141,7 @@ def list_launch_paths_single_page(self, **kwargs):
         **kwargs
     )
 
+
 def list_accepted_portfolio_shares_single_page(self, **kwargs):
     """
     This will continue to call list_accepted_portfolio_shares until there are no more pages left to retrieve.  It will return
@@ -154,6 +157,7 @@ def list_accepted_portfolio_shares_single_page(self, **kwargs):
         'PortfolioDetails',
         **kwargs
     )
+
 
 def scan_provisioned_products_single_page(self, **kwargs):
     """
@@ -172,15 +176,36 @@ def scan_provisioned_products_single_page(self, **kwargs):
     )
 
 
+def list_portfolio_access_single_page(self, **kwargs):
+    """
+    This will continue to call list_portfolio_access until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_portfolio_access does.
+
+    :param self: servicecatalog client
+    :param kwargs: these are passed onto the list_portfolio_access method call
+    :return: servicecatalog_client.list_portfolio_access.response
+    """
+    return slurp(
+        'list_portfolio_access',
+        self.list_portfolio_access,
+        'AccountIds',
+        **kwargs
+    )
+
+
 def make_better(client):
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
     client.list_portfolios_single_page = types.MethodType(list_portfolios_single_page, client)
     client.list_provisioning_artifacts_single_page = types.MethodType(list_provisioning_artifacts_single_page, client)
     client.list_portfolios_for_product_single_page = types.MethodType(list_portfolios_for_product_single_page, client)
-    client.list_provisioned_product_plans_single_page = types.MethodType(list_provisioned_product_plans_single_page, client)
+    client.list_provisioned_product_plans_single_page = types.MethodType(list_provisioned_product_plans_single_page,
+                                                                         client)
     client.search_provisioned_products_single_page = types.MethodType(search_provisioned_products_single_page, client)
     client.list_launch_paths_single_page = types.MethodType(list_launch_paths_single_page, client)
-    client.list_principals_for_portfolio_single_page = types.MethodType(list_principals_for_portfolio_single_page, client)
-    client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page, client)
+    client.list_principals_for_portfolio_single_page = types.MethodType(list_principals_for_portfolio_single_page,
+                                                                        client)
+    client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page,
+                                                                         client)
     client.scan_provisioned_products_single_page = types.MethodType(scan_provisioned_products_single_page, client)
+    client.list_portfolio_access_single_page = types.MethodType(list_portfolio_access_single_page, client)
     return client
