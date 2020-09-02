@@ -32,10 +32,14 @@ def create_or_update(self, ShouldUseChangeSets=True, **kwargs):
 
     is_first_run = True
     try:
-        self.describe_stacks(
+        describe_stack = self.describe_stacks(
             StackName=stack_name
         )
-        is_first_run = False
+        if describe_stack['Stacks'][0]['StackStatus'] == 'ROLLBACK_COMPLETE':
+            logger.info("Stack with id {} previously failed to create, deleting".format(stack_name))
+            ensure_deleted(self, stack_name)
+        else:
+            is_first_run = False
     except self.exceptions.ClientError as e:
         if "Stack with id {} does not exist".format(stack_name) not in str(e):
             raise e
