@@ -15,7 +15,7 @@ def get_hash_for_template(template):
     return "{}{}".format('a', hasher.hexdigest())
 
 
-def create_or_update(self, **kwargs):
+def create_or_update(self, ShouldUseChangeSets=True, **kwargs):
     """
     For the given template and stack name, this method will create a stack if it doesnt already exist otherwise it will
     generate a changeset and then execute it.  This method will wait for the operation to complete before returning and
@@ -53,37 +53,57 @@ def create_or_update(self, **kwargs):
                 ))
             raise e
     else:
-        logger.info('Updating: {}'.format(stack_name))
-        change_set_name = f"change-{str(time.time())}".replace('.','')
-        self.create_change_set(
-            ChangeSetName=change_set_name,
-            ChangeSetType="UPDATE",
-            **kwargs,
-        )
-        change_set_create_complete_waiter = self.get_waiter('change_set_create_complete')
-        try:
-            change_set_create_complete_waiter.wait(
+        if ShouldUseChangeSets:
+            logger.info('Updating (with changeset): {}'.format(stack_name))
+            change_set_name = f"change-{str(time.time())}".replace('.','')
+            self.create_change_set(
                 ChangeSetName=change_set_name,
-                StackName=stack_name,
+                ChangeSetType="UPDATE",
+                **kwargs,
             )
-        except botocore.exceptions.WaiterError as e:
-            if "Waiter ChangeSetCreateComplete failed: Waiter encountered a terminal failure state" not in str(e):
-                raise e
+            change_set_create_complete_waiter = self.get_waiter('change_set_create_complete')
+            try:
+                change_set_create_complete_waiter.wait(
+                    ChangeSetName=change_set_name,
+                    StackName=stack_name,
+                )
+            except botocore.exceptions.WaiterError as e:
+                if "Waiter ChangeSetCreateComplete failed: Waiter encountered a terminal failure state" not in str(e):
+                    raise e
 
-        logger.info('Describing change set: {}'.format(stack_name))
-        response = self.describe_change_set(
-            ChangeSetName=change_set_name,
-            StackName=stack_name
-        )
-        change_set = response.get('Changes')
-        logger.info('Changes:' + yaml.safe_dump(change_set))
-        if len(change_set) > 0:
-            logger.info('Executing change set: {}'.format(stack_name))
-            self.execute_change_set(
+            logger.info('Describing change set: {}'.format(stack_name))
+            response = self.describe_change_set(
                 ChangeSetName=change_set_name,
-                StackName=stack_name,
+                StackName=stack_name
             )
-            logger.info('Waiting for change set to execute: {}'.format(stack_name))
+            change_set = response.get('Changes')
+            logger.info('Changes:' + yaml.safe_dump(change_set))
+            if len(change_set) > 0:
+                logger.info('Executing change set: {}'.format(stack_name))
+                self.execute_change_set(
+                    ChangeSetName=change_set_name,
+                    StackName=stack_name,
+                )
+                logger.info('Waiting for change set to execute: {}'.format(stack_name))
+                waiter = self.get_waiter('stack_update_complete')
+                try:
+                    waiter.wait(StackName=stack_name)
+                except Exception as e:
+                    response = self.describe_stack_events(StackName=stack_name)
+                    for stack_event in response.get('StackEvents'):
+                        logger.error('{}: {}'.format(
+                            stack_event.get('ResourceStatus'),
+                            stack_event.get('ResourceStatusReason'),
+                        ))
+                    raise e
+                logger.info('Finished stack: {}'.format(stack_name))
+            else:
+                logger.info('No changes to build for stack: {}'.format(stack_name))
+                logger.info('Finished stack: {}'.format(stack_name))
+        else:
+            logger.info('Updating (without changeset): {}'.format(stack_name))
+            self.update_stack(**kwargs)
+            logger.info('Waiting for update_stack to complete: {}'.format(stack_name))
             waiter = self.get_waiter('stack_update_complete')
             try:
                 waiter.wait(StackName=stack_name)
@@ -95,9 +115,6 @@ def create_or_update(self, **kwargs):
                         stack_event.get('ResourceStatusReason'),
                     ))
                 raise e
-            logger.info('Finished stack: {}'.format(stack_name))
-        else:
-            logger.info('No changes to build for stack: {}'.format(stack_name))
             logger.info('Finished stack: {}'.format(stack_name))
 
 
