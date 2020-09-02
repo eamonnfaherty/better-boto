@@ -4,6 +4,8 @@ import hashlib
 import botocore
 import time
 import yaml
+import botocore
+
 from .utils import slurp
 
 logger = logging.getLogger(__file__)
@@ -102,19 +104,27 @@ def create_or_update(self, ShouldUseChangeSets=True, **kwargs):
                 logger.info('Finished stack: {}'.format(stack_name))
         else:
             logger.info('Updating (without changeset): {}'.format(stack_name))
-            self.update_stack(**kwargs)
-            logger.info('Waiting for update_stack to complete: {}'.format(stack_name))
-            waiter = self.get_waiter('stack_update_complete')
             try:
-                waiter.wait(StackName=stack_name)
-            except Exception as e:
-                response = self.describe_stack_events(StackName=stack_name)
-                for stack_event in response.get('StackEvents'):
-                    logger.error('{}: {}'.format(
-                        stack_event.get('ResourceStatus'),
-                        stack_event.get('ResourceStatusReason'),
-                    ))
-                raise e
+                self.update_stack(**kwargs)
+                logger.info('Waiting for update_stack to complete: {}'.format(stack_name))
+                waiter = self.get_waiter('stack_update_complete')
+                try:
+                    waiter.wait(StackName=stack_name)
+                except Exception as e:
+                    response = self.describe_stack_events(StackName=stack_name)
+                    for stack_event in response.get('StackEvents'):
+                        logger.error('{}: {}'.format(
+                            stack_event.get('ResourceStatus'),
+                            stack_event.get('ResourceStatusReason'),
+                        ))
+                    raise e
+            except botocore.exceptions.ClientError as ex:
+                error_message = ex.response['Error']['Message']
+                if error_message == 'No updates are to be performed.':
+                    logger.info("No changes")
+                else:
+                    raise ex
+
             logger.info('Finished stack: {}'.format(stack_name))
 
 
