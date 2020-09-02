@@ -17,7 +17,7 @@ def get_hash_for_template(template):
     return "{}{}".format('a', hasher.hexdigest())
 
 
-def create_or_update(self, ShouldUseChangeSets=True, **kwargs):
+def create_or_update(self, ShouldUseChangeSets=True, ShouldDeleteRollbackComplete=False, **kwargs):
     """
     For the given template and stack name, this method will create a stack if it doesnt already exist otherwise it will
     generate a changeset and then execute it.  This method will wait for the operation to complete before returning and
@@ -35,9 +35,11 @@ def create_or_update(self, ShouldUseChangeSets=True, **kwargs):
         describe_stack = self.describe_stacks(
             StackName=stack_name
         )
-        if describe_stack['Stacks'][0]['StackStatus'] == 'ROLLBACK_COMPLETE':
-            logger.info("Stack with id {} previously failed to create, deleting".format(stack_name))
-            ensure_deleted(self, stack_name)
+        if ShouldDeleteRollbackComplete:
+            if len(describe_stack.get('Stacks', []) > 0) and describe_stack.get('Stacks')[0].get("StackStatus", "") == "ROLLBACK_COMPLETE":
+                logger.info("Stack with id {} is ROLLBACK_COMPLETE, deleting".format(stack_name))
+                ensure_deleted(self, stack_name)
+                is_first_run = True
         else:
             is_first_run = False
     except self.exceptions.ClientError as e:
