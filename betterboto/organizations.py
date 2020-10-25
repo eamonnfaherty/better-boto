@@ -95,6 +95,24 @@ def list_organizational_units_for_parent_single_page(self, **kwargs):
     )
 
 
+def list_roots_single_page(self, **kwargs):
+    """
+    This will continue to call list_roots until there are no more pages left to retrieve.
+    It will return the aggregated response in the same structure as list_roots does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_roots method call
+    :return: organizations_client.list_roots.response
+    """
+    return slurp(
+        'list_roots',
+        self.list_roots,
+        'Roots',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
 def list_parents_single_page(self, **kwargs):
     """
     This will continue to call list_parents until there are no more pages left to retrieve.
@@ -223,6 +241,7 @@ def make_better(client):
     client.list_children_single_page = types.MethodType(list_children_single_page, client)
     client.list_children_nested = types.MethodType(list_children_nested, client)
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
+    client.list_roots_single_page = types.MethodType(list_roots_single_page, client)
     client.list_parents_single_page = types.MethodType(list_parents_single_page, client)
     client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
     client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page, client)
