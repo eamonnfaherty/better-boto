@@ -254,11 +254,8 @@ def convert_path_to_ou(self, path):
         response = self.list_roots()
         for root in response.get('Roots', []):
             child_id = root.get('Id')
-            print(child_id)
             response = self.list_organizational_units_for_parent_single_page(ParentId=child_id)
-            print(response)
             for organizational_unit in response.get('OrganizationalUnits', []):
-                print(organizational_unit)
                 if organizational_unit.get('Name') == part_looking_for:
                     logger.debug('Found {}: in {}'.format(part_looking_for, organizational_unit.get('Id')))
                     if len(parts) > 0:
