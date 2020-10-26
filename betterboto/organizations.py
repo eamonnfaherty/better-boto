@@ -95,6 +95,24 @@ def list_policies_single_page(self, **kwargs):
     )
 
 
+def list_policies_for_target_single_page(self, **kwargs):
+    """
+    This will continue to call list_policies_for_target until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_policies_for_target does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_policies_for_target method call
+    :return: organizations_client.list_policies_for_target.response
+    """
+    return slurp(
+        'list_policies_for_target',
+        self.list_policies_for_target,
+        'Policies',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
 def list_organizational_units_for_parent_single_page(self, **kwargs):
     """
     This will continue to call list_organizational_units_for_parent until there are no more pages left to retrieve.
@@ -258,6 +276,8 @@ def make_better(client):
     client.convert_path_to_ou = types.MethodType(convert_path_to_ou, client)
     client.list_children_single_page = types.MethodType(list_children_single_page, client)
     client.list_children_nested = types.MethodType(list_children_nested, client)
+    client.list_policies_single_page = types.MethodType(list_policies_single_page, client)
+    client.list_policies_for_target_single_page = types.MethodType(list_policies_for_target_single_page, client)
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
     client.list_roots_single_page = types.MethodType(list_roots_single_page, client)
     client.list_parents_single_page = types.MethodType(list_parents_single_page, client)
