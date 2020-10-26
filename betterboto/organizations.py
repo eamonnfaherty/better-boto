@@ -77,6 +77,24 @@ def list_children_single_page(self, **kwargs):
     )
 
 
+def list_policies_single_page(self, **kwargs):
+    """
+    This will continue to call list_policies until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_policies does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_policies method call
+    :return: organizations_client.list_policies.response
+    """
+    return slurp(
+        'list_policies',
+        self.list_policies,
+        'Policies',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
 def list_organizational_units_for_parent_single_page(self, **kwargs):
     """
     This will continue to call list_organizational_units_for_parent until there are no more pages left to retrieve.
