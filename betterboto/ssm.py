@@ -38,6 +38,43 @@ def put_parameter_and_wait(self, Name, **kwargs):
     return current_parameter
 
 
+def get_parameter_history_single_page(self, **kwargs):
+    """
+    This will continue to call get_parameter_history_single_page until there are no more pages left to retrieve.
+    It will return the aggregated response in the same structure as get_parameter_history_single_page does.
+
+    :param self: ssm client
+    :param kwargs: these are passed onto the get_parameter_history_single_page method call
+    :return: ssm_client.get_parameter_history_single_page.response
+    """
+    return slurp(
+        'get_parameter_history',
+        self.get_parameter_history,
+        'Parameters',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
+class ParameterVersionNotFoundException(Exception):
+    pass
+
+
+def get_parameter_version(self, Version, **kwargs):
+    paginator = self.get_paginator('get_parameter_history')
+    iterator = paginator.paginate(
+        **kwargs
+    )
+    for page in iterator:
+        for parameter in page.get("Parameters", []):
+            if parameter.get("Version") == Version:
+                return dict(Parameter=parameter)
+
+    raise ParameterVersionNotFoundException(f"Could not find version: {Version} of {kwargs.get('Name')}")
+
+
 def make_better(client):
     client.put_parameter_and_wait = types.MethodType(put_parameter_and_wait, client)
+    client.get_parameter_history_single_page = types.MethodType(get_parameter_history_single_page, client)
+    client.get_parameter_version = types.MethodType(get_parameter_version, client)
     return client
