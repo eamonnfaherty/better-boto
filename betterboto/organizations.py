@@ -7,36 +7,20 @@ from .utils import slurp
 logger = logging.getLogger(__file__)
 
 
-def list_accepted_portfolio_shares_single_page(self, **kwargs):
+def list_targets_for_policy_single_page(self, **kwargs):
     """
-    This will continue to call list_accepted_portfolio_shares until there are no more pages left to retrieve.  It will return
-    the aggregated response in the same structure as list_accepted_portfolio_shares does.
+    This will continue to call list_targets_for_policy until there are no more pages left to retrieve.  It will return
+    the aggregated response in the same structure as list_targets_for_policy does.
 
     :param self: organizations client
-    :param kwargs: these are passed onto the list_accepted_portfolio_shares method call
-    :return: organizations_client.list_accepted_portfolio_shares.response
+    :param kwargs: these are passed onto the list_targets_for_policy method call
+    :return: organizations_client.list_targets_for_policy.response
     """
     return slurp(
-        'list_accepted_portfolio_shares',
-        self.list_accepted_portfolio_shares,
-        'PortfolioDetails',
-        **kwargs
-    )
-
-
-def search_products_as_admin_single_page(self, **kwargs):
-    """
-    This will continue to call search_products_as_admin until there are no more pages left to retrieve.  It will return
-    the aggregated response in the same structure as search_products_as_admin does.
-
-    :param self: organizations client
-    :param kwargs: these are passed onto the search_products_as_admin method call
-    :return: organizations_client.search_products_as_admin.response
-    """
-    return slurp(
-        'search_products_as_admin',
-        self.search_products_as_admin,
-        'ProductViewDetails',
+        'list_targets_for_policy',
+        self.list_targets_for_policy,
+        'Targets',
+        'NextToken', 'NextToken',
         **kwargs
     )
 
@@ -220,11 +204,8 @@ def find_match(self, parts, parent_id):
     logger.info('Now looking for: {} in: {}'.format(part_looking_for, parent_id))
     response = self.list_organizational_units_for_parent_single_page(ParentId=parent_id)
     for organizational_unit in response.get('OrganizationalUnits', []):
-        logger.info("Described: {}".format(organizational_unit))
         if organizational_unit.get('Name') == part_looking_for:
-            logger.info('Found: {}'.format(part_looking_for))
             if len(parts) == 0:
-                logger.info('Finished looking for a match: {}'.format(organizational_unit))
                 return organizational_unit.get('Id')
             else:
                 return self.find_match(parts, organizational_unit.get('Id'))
@@ -278,6 +259,5 @@ def make_better(client):
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
     client.list_roots_single_page = types.MethodType(list_roots_single_page, client)
     client.list_parents_single_page = types.MethodType(list_parents_single_page, client)
-    client.search_products_as_admin_single_page = types.MethodType(search_products_as_admin_single_page, client)
-    client.list_accepted_portfolio_shares_single_page = types.MethodType(list_accepted_portfolio_shares_single_page, client)
+    client.list_targets_for_policy_single_page = types.MethodType(list_targets_for_policy_single_page, client)
     return client
