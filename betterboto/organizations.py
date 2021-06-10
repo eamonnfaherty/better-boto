@@ -151,6 +151,24 @@ def list_parents_single_page(self, **kwargs):
     )
 
 
+def list_delegated_administrators_single_page(self, **kwargs):
+    """
+    This will continue to call list_delegated_administrators until there are no more pages left to retrieve.
+    It will return the aggregated response in the same structure as list_delegated_administrators does.
+
+    :param self: organizations client
+    :param kwargs: these are passed onto the list_delegated_administrators method call
+    :return: organizations_client.list_delegated_administrators.response
+    """
+    return slurp(
+        'list_delegated_administrators',
+        self.list_delegated_administrators,
+        'DelegatedAdministrators',
+        'NextToken', 'NextToken',
+        **kwargs
+    )
+
+
 def list_children_nested(self, **kwargs):
     """
     This method will return a list of all children (either ACCOUNT or ORGANIZATIONAL_UNIT) for the given ParentId.  It
@@ -259,5 +277,6 @@ def make_better(client):
     client.list_organizational_units_for_parent_single_page = types.MethodType(list_organizational_units_for_parent_single_page, client)
     client.list_roots_single_page = types.MethodType(list_roots_single_page, client)
     client.list_parents_single_page = types.MethodType(list_parents_single_page, client)
+    client.list_delegated_administrators_single_page = types.MethodType(list_delegated_administrators_single_page, client)
     client.list_targets_for_policy_single_page = types.MethodType(list_targets_for_policy_single_page, client)
     return client
