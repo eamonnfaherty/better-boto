@@ -1,4 +1,5 @@
 import logging
+import time
 
 logger = logging.getLogger(__file__)
 
@@ -6,6 +7,7 @@ logger = logging.getLogger(__file__)
 def slurp(
         name, func, response_to_concat,
         next_token_name_in_response='NextPageToken', next_token_name_in_request='PageToken',
+        wait_between_pages=0,
         **kwargs
 ):
     logger.info("{}: {}".format(name, kwargs))
@@ -19,3 +21,4 @@ def slurp(
             return response
         else:
             kwargs[next_token_name_in_request] = response.get(next_token_name_in_response)
+        time.sleep(wait_between_pages)
