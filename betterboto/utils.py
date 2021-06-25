@@ -7,13 +7,13 @@ logger = logging.getLogger(__file__)
 def slurp(
         name, func, response_to_concat,
         next_token_name_in_response='NextPageToken', next_token_name_in_request='PageToken',
-        wait_between_pages=0,
+        wait_between_pages=0, logging_prefix="",
         **kwargs
 ):
-    logger.info("{}: {}".format(name, kwargs))
+    logger.info("{}{}: {}".format(logging_prefix, name, kwargs))
     all_responses = []
     while True:
-        logger.info(f"searching, {next_token_name_in_request}: {kwargs.get(next_token_name_in_request, 'FirstPage')}")
+        logger.info(f"{logging_prefix}{name} searching, {next_token_name_in_request}: {kwargs.get(next_token_name_in_request, 'FirstPage')}")
         response = func(**kwargs)
         all_responses += response.get(response_to_concat)
         if response.get(next_token_name_in_response) is None:
