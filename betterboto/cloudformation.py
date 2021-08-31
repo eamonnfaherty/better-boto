@@ -32,19 +32,21 @@ def create_or_update(self, ShouldUseChangeSets=True, ShouldDeleteRollbackComplet
 
     is_first_run = True
     try:
-        describe_stack = self.describe_stacks(
+        described_stacks = self.describe_stacks(
             StackName=stack_name
         )
-        if ShouldDeleteRollbackComplete:
-            if len(describe_stack.get('Stacks', []) > 0) and describe_stack.get('Stacks')[0].get("StackStatus", "") == "ROLLBACK_COMPLETE":
-                logger.info("Stack with id {} is ROLLBACK_COMPLETE, deleting".format(stack_name))
-                ensure_deleted(self, stack_name)
-                is_first_run = True
-        else:
-            is_first_run = False
+        is_first_run = False
     except self.exceptions.ClientError as e:
         if "Stack with id {} does not exist".format(stack_name) not in str(e):
             raise e
+
+    if ShouldDeleteRollbackComplete and not is_first_run:
+        for stack in described_stacks.get('Stacks', []):
+            if stack.get("StackStatus") == "ROLLBACK_COMPLETE":
+                reason = stack.get('StackStatusReason', 'Unknown')
+                logger.info(f"Stack with id {stack_name} is ROLLBACK_COMPLETE because {reason}, deleting")
+                ensure_deleted(self, stack_name)
+                is_first_run = True
 
     if is_first_run:
         logger.info('Creating: {}'.format(stack_name))
