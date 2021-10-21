@@ -108,6 +108,11 @@ def create_or_update(self, ShouldUseChangeSets=True, ShouldDeleteRollbackComplet
                     raise e
                 logger.info('Finished stack: {}'.format(stack_name))
             else:
+                self.delete_change_set(
+                    ChangeSetName=change_set_name,
+                    StackName=stack_name
+                )
+                logger.info('Deleted change set: {}'.format(change_set_name))
                 logger.info('No changes to build for stack: {}'.format(stack_name))
                 logger.info('Finished stack: {}'.format(stack_name))
         else:
