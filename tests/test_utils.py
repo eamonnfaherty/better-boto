@@ -25,3 +25,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(2, len(all_things['things']))
         self.assertIsNone(all_things.get('NextPageToken'))
 
+    def test_slurp_with_logging_prefix(self):
+        all_things = slurp('testing', mock_paginated_function, 'things', logging_prefix='some_prefix')
+        self.assertEqual(2, len(all_things['things']))
+
+
