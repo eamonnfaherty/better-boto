@@ -23,4 +23,7 @@ setuptools.setup(
         "boto3",
         "pyyaml>=4.2b1",
     ],
+    extras_require={
+        'dev': open('requirements-dev.txt').read().splitlines()
+    }
 )
